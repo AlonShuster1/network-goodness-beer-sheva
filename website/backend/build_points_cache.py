@@ -61,12 +61,13 @@ def build_points() -> Points:
     return points
 
 
-def main():
-    print(f"Cache source: {CACHE_DIR}")
-    print(f"Output pickle: {PICKLE_PATH}")
+def build_and_save(pickle_path: str = PICKLE_PATH) -> Points:
+    """Build the Points object and persist it to disk. Returns the object
+    so callers can also use it immediately without a second load."""
     if not os.path.isdir(CACHE_DIR):
-        print(f"ERROR: cache dir does not exist: {CACHE_DIR}", file=sys.stderr)
-        sys.exit(1)
+        raise FileNotFoundError(
+            f"Cached neighborhood GeoJSONs not found at {CACHE_DIR}"
+        )
 
     points = build_points()
 
@@ -74,9 +75,20 @@ def main():
     # we pickle. That way the loaded object is ready to use immediately.
     _ = points.demand_zone_centers
 
-    os.makedirs(os.path.dirname(PICKLE_PATH), exist_ok=True)
-    with open(PICKLE_PATH, "wb") as f:
+    os.makedirs(os.path.dirname(pickle_path), exist_ok=True)
+    with open(pickle_path, "wb") as f:
         pickle.dump(points, f)
+    return points
+
+
+def main():
+    print(f"Cache source: {CACHE_DIR}")
+    print(f"Output pickle: {PICKLE_PATH}")
+    if not os.path.isdir(CACHE_DIR):
+        print(f"ERROR: cache dir does not exist: {CACHE_DIR}", file=sys.stderr)
+        sys.exit(1)
+
+    points = build_and_save()
 
     print(f"\nDone. Wrote {PICKLE_PATH}")
     print(f"  zones: {len(points.demand_zone_centers)}")

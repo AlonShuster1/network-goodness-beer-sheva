@@ -53,10 +53,13 @@ def get_points():
     global _points
     if _points is None:
         if not os.path.exists(PICKLE_PATH):
-            raise RuntimeError(
-                f"Points cache not found at {PICKLE_PATH}. "
-                f"Run `python build_points_cache.py` first."
-            )
+            # First run: build the cache from the bundled GeoJSONs.
+            print(f"[startup] Cache not found at {PICKLE_PATH}. Building (one-time, ~10s)…")
+            from build_points_cache import build_and_save
+            _points = build_and_save(PICKLE_PATH)
+            print(f"[startup] Cache built: {len(_points.demand_zone_centers)} zones, "
+                  f"{len(_points._demand_points)} demand points.")
+            return _points
         with open(PICKLE_PATH, "rb") as f:
             _points = pickle.load(f)
     return _points

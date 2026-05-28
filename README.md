@@ -38,43 +38,38 @@ All calculation logic lives in Python; the frontend only handles the map and API
 
 ## Run it locally
 
-### 1. Prerequisites
+### Prerequisites
 - **Python 3.10+** (3.13 tested)
-- pip
 
-### 2. Install dependencies
+### Quick start — one command
+
+**Windows:**
+```bat
+git clone https://github.com/AlonShuster1/network-goodness-beer-sheva.git
+cd network-goodness-beer-sheva
+run.bat
+```
+
+**Mac / Linux:**
+```bash
+git clone https://github.com/AlonShuster1/network-goodness-beer-sheva.git
+cd network-goodness-beer-sheva
+chmod +x run.sh && ./run.sh
+```
+
+The launcher installs Python dependencies, starts the server at `http://127.0.0.1:8765`, and opens it in your browser. The first launch builds a one-time demand-points cache (~10 sec); subsequent launches start instantly.
+
+### Manual / step-by-step
+
+If you'd rather run it without the launcher:
+
 ```bash
 pip install -r requirements.txt
-```
-
-### 3. Build the demand-points cache (one-time, ~10 sec)
-Reads the 19 cached building GeoJSONs in `ng_demand_points/beer_sheva/` and produces a pickle the server loads on startup.
-
-```bash
 cd website/backend
-python build_points_cache.py
-```
-
-You should see something like:
-```
-[hood 0] loading buildings_0.geojson…
-...
-Done. Wrote .../cache/beer_sheva_points.pkl
-  zones: 19
-  demand points: 14414
-```
-
-### 4. Start the server
-From `website/backend`:
-
-```bash
 python -m uvicorn main:app --host 127.0.0.1 --port 8765
 ```
 
-### 5. Open in your browser
-```
-http://127.0.0.1:8765/
-```
+Then open `http://127.0.0.1:8765/`. The cache is built automatically on first request if it doesn't exist yet.
 
 ---
 
