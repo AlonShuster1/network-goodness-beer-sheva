@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Generated cache (rebuild with build_points_cache.py)
+website/backend/cache/*.pkl
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
